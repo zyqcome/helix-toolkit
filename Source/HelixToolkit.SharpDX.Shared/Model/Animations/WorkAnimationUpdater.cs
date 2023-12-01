@@ -58,10 +58,12 @@ namespace HelixToolkit.UWP
 
                 //NodeCollection
 
+
                 orign = new Quaternion[NodeCollection.Count];
                 for (int i = 0; i < NodeCollection.Count; i++) 
                 {
                     orign[i] = NodeCollection[i].KeyFrames.Items[0].Rotation;
+                    Debug.WriteLine($"index {i} node name: {NodeCollection[i].Node.Name}");
                 }
             }
 
