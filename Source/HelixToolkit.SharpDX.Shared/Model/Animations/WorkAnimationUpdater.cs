@@ -63,7 +63,6 @@ namespace HelixToolkit.UWP
                 for (int i = 0; i < NodeCollection.Count; i++) 
                 {
                     orign[i] = NodeCollection[i].KeyFrames.Items[0].Rotation;
-                    Debug.WriteLine($"index {i} node name: {NodeCollection[i].Node.Name}");
                 }
             }
 
@@ -232,15 +231,15 @@ namespace HelixToolkit.UWP
                 UpdateBoneSkinMesh();
             }
 
-            public void UpdateOneStep(int select_bon, float Degrees)
+            public void UpdateOneStep(int select_bon, Vector3 axis, float Degrees)
             {
-                UpdateNodesOneStep(select_bon,Degrees);
+                UpdateNodesOneStep(select_bon, axis, Degrees);
                 UpdateBoneSkinMesh();
             }
 
             Quaternion[] orign;
 
-            private void UpdateNodesOneStep(int select_bon, float Degrees)
+            private void UpdateNodesOneStep(int select_bon, Vector3 axis, float Degrees)
             {
                 var n = NodeCollection[select_bon];
                 var count = n.KeyFrames.Count; // Make sure to use this count
@@ -248,7 +247,7 @@ namespace HelixToolkit.UWP
 
                 //ref var currFrame = ref frames[select_bon];
 
-                var axis = new Vector3(0, 0, 1); // 旋转轴
+                //var axis = new Vector3(0, 0, 1); // 旋转轴
                 float angle = Degrees; // 旋转角度（度）
                 Quaternion quaternion = CreateFromAxisAngle(axis, angle);
 
