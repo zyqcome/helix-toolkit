@@ -55,15 +55,6 @@ namespace HelixToolkit.UWP
                 Animation = animation;
                 Name = animation.Name;
                 CreateAnimationRoots();
-
-                //NodeCollection
-
-
-                orign = new Quaternion[NodeCollection.Count];
-                for (int i = 0; i < NodeCollection.Count; i++) 
-                {
-                    orign[i] = NodeCollection[i].KeyFrames.Items[0].Rotation;
-                }
             }
 
             private void CreateAnimationRoots()
@@ -231,19 +222,32 @@ namespace HelixToolkit.UWP
                 UpdateBoneSkinMesh();
             }
 
-            public void UpdateOneStep(int select_bon, Vector3 axis, float Degrees)
+            public void UpdateOneStep(int select_bon, int select_fram, Vector3 axis, float Degrees)
             {
-                UpdateNodesOneStep(select_bon, axis, Degrees);
+                UpdateNodesOneStep(select_bon, select_fram, axis, Degrees);
                 UpdateBoneSkinMesh();
             }
 
-            Quaternion[] orign;
+            Dictionary<string, Quaternion> temp= new Dictionary<string, Quaternion>();
 
-            private void UpdateNodesOneStep(int select_bon, Vector3 axis, float Degrees)
+            public void IntSelectFram(int select_bon, int select_fram)
+            {
+                if (temp.ContainsKey($"{select_bon}_{select_fram}") == false)
+                {
+                    temp.Add($"{select_bon}_{select_fram}", NodeCollection[select_bon].KeyFrames.Items[select_fram].Rotation);
+                }
+                else
+                {
+                    temp[$"{select_bon}_{select_fram}"] = NodeCollection[select_bon].KeyFrames.Items[select_fram].Rotation;
+                }
+            }
+
+            private void UpdateNodesOneStep(int select_bon,int select_fram, Vector3 axis, float Degrees)
             {
                 var n = NodeCollection[select_bon];
-                var count = n.KeyFrames.Count; // Make sure to use this count
+                //var count = n.KeyFrames.Count; // Make sure to use this count
                 var frames = n.KeyFrames.Items;
+                string keystr = $"{select_bon}_{select_fram}";
 
                 //ref var currFrame = ref frames[select_bon];
 
@@ -251,10 +255,10 @@ namespace HelixToolkit.UWP
                 float angle = Degrees; // 旋转角度（度）
                 Quaternion quaternion = CreateFromAxisAngle(axis, angle);
 
-                orign[select_bon] = Quaternion.Multiply(orign[select_bon], quaternion);
+                temp[keystr] = Quaternion.Multiply(temp[keystr], quaternion);
                 
                 var transform = Matrix.Scaling(frames[0].Scale) *
-                            Matrix.RotationQuaternion(orign[select_bon]) *
+                            Matrix.RotationQuaternion(temp[keystr]) *
                             Matrix.Translation(frames[0].Translation);
 
                 n.Node.ModelMatrix = transform;
