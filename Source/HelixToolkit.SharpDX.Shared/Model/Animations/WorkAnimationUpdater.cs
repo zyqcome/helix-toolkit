@@ -260,6 +260,28 @@ namespace HelixToolkit.UWP
                 var transform = Matrix.Scaling(frames[0].Scale) *
                             Matrix.RotationQuaternion(temp[keystr]) *
                             Matrix.Translation(frames[0].Translation);
+                
+
+                n.Node.ModelMatrix = transform;
+
+                changed = true;
+            }
+
+            public void UpdateNodesOneStep_by_r(int select_bon, Vector3 axis, float Degrees)
+            {
+                var n = NodeCollection[select_bon];
+                //var count = n.KeyFrames.Count; // Make sure to use this count
+
+                //ref var currFrame = ref frames[select_bon];
+
+                //var axis = new Vector3(0, 0, 1); // 旋转轴
+                float angle = Degrees; // 旋转角度（度）
+                Quaternion quaternion = CreateFromAxisAngle(axis, angle);
+
+                //temp[keystr] = Quaternion.Multiply(temp[keystr], quaternion);
+
+                var transform = n.Node.ModelMatrix * Matrix.RotationQuaternion(quaternion);
+
 
                 n.Node.ModelMatrix = transform;
 
